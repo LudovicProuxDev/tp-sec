@@ -1,0 +1,28 @@
+name: Parallel Cypress Tests
+on: push
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        groups:
+          - name: fast
+            specs: |
+              cypress/tests/api/*
+              cypress/tests/demo/*
+              cypress/tests/ui-auth-providers/*
+          - name: slow
+            specs: cypress/tests/ui/*
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Cypress run (${{ matrix.groups.name }} suites)
+        uses: cypress-io/github-action@v6
+        with:
+          build: npm run build
+          spec: ${{ matrix.groups.specs }}
