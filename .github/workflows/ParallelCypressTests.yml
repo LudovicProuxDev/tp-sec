@@ -20,9 +20,12 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version-file: ".nvmrc"
-
+      - name: Install dependencies
+        run: yarn
       - name: Cypress run (${{ matrix.groups.name }} suites)
         uses: cypress-io/github-action@v6
         with:
-          build: npm run build
+          start: yarn start
+          wait-on: 'http://localhost:3000'
+          browser: chrome
           spec: ${{ matrix.groups.specs }}
